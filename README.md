@@ -44,7 +44,7 @@ You can see the status of the running VM by doing:
 
 **Warning**: Vagrant create a ".vagrant" folder. Make sure you specified the .vagrant folder in the .gitignore file. In fact, if you upload the .vagrant folder, it will let your repository be heavier and sometimes it could "break" it. You don't need this folder in your repository, the vagrantfile is enough (it contains all the needed information to initialize a VM). 
 
-# Connecting 
+# Connection to the VM
 
 Now that your VM is running, you can directly connect to it through SSH with the command:
 
@@ -68,6 +68,7 @@ If you want to restart your VM, you can do it with the command:
 
 >vagrant up
 
+# To be developed 
 
 gitignore 
 
