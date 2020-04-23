@@ -1,6 +1,13 @@
 # Presentation 
 
-Vagrant is a tool for building and managing virtual machine environments in a single workflow. It provides easy to configure, reproducible and portable work environments. Vagrant stands on the shoulders of providers like VirtualBox, VMWare, AWS and others. In our case, we'll use Vagrant and VirtualBox as a provider. 
+Vagrant is a tool for building and managing virtual machine environments in a single workflow. It provides easy to configure, reproducible, customized and portable work environments. Vagrant stands on the shoulders of providers like VirtualBox, VMWare, AWS and others. In our case, we'll use Vagrant and VirtualBox as a provider. It perfectly fits to use virtual machines as isolated sandboxes and to create quickly environments for development & testing (and consequently reduce hardware requirements). 
+
+It's good to know that Vagrant uses a single file format to build, run and manage any VM for almost any hypervisor and drastically reduces the amount of time needed to do so.  
+
+In order to work with Vagrant, there are three important components:
+- The CLI: you will use it to start and stop Vagrant VMs, initialize new Vagrant environments and manage running VMs. 
+- The Vagrantfile: it defines Vagrant VMs and is a small program written in Ruby language and executed by the CLI in order to run a Vagrant VM.
+- Vagrant cloud: Hashicorp, the maker of Vagrant, provides a vagrant cloud as an online market place for public virtual machines. Users of Vagrant can also publish their own Vagrant VMs publicly or use a private account to restrict access.
 
 For this demonstration, we are going to use Ubuntu 16.04. 
 
@@ -12,7 +19,7 @@ Once you installed Vagrant, when running your command prompt you can see the dif
 
 >vagrant list-commands 
 
-**Warning**: If you wish to use VirtualBox on Windows, you must ensure that Hyper-V is not enabled on Windows. You can turn off the feature by running this Powershell command:
+**Warning (1)**: If you wish to use VirtualBox on Windows, you must ensure that Hyper-V is not enabled on Windows. You can turn off the feature by running this Powershell command:
 
 >Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All
 
@@ -23,7 +30,9 @@ You can also disable it by going through the Windows system settings:
 - Unselect Hyper-V and click OK.
 - You might have to reboot your machine for the changes to take effect.
 
-Also, VirtualBox Guest Additions must be installed so that things such as shared folders can function. Installing guest additions also usually improves performance since the guest OS can make some optimizations by knowing it is running within VirtualBox.
+**Warning (2)**: Also, VirtualBox Guest Additions must be installed so that things such as shared folders can function. Installing guest additions also usually improves performance since the guest OS can make some optimizations by knowing it is running within VirtualBox.
+
+**Warning (3)**: Verify that Intel VT-x (or Hardware Virtualization Feature) is enabled. It helps accelerate virtual machines created in a hypervisor. 
 
 # Configuration 
 
@@ -33,15 +42,16 @@ We first initialize a vagrant environment. We need an Ubuntu 16.04 environment a
 - Then we searche the box we need, in our case we need an Ubuntu 16.04 environment working with a VirtualBox provider, 
 - We see that bento/ubuntu-16.04 box matches and is the most downloaded. 
 
-Note that you have to execute the vagrant commands where the vagrant environment is set. 
+Also, note that "box" is a general term for a Vagrant VM. A box is a copressed file that contains all the files needed to start a Vagrant virtual machine. 
 
 # Initialization 
 
-In order to initialize our vagrant environment, we need to execute the following command: 
+In order to initialize our vagrant environment, we need to execute the following command (the first part of the command is the organization name and the second part is the distribution inversion): 
 
->vagrant init ubuntu/trusty64
+>vagrant init ubuntu/xenial64
 
 The execution of this command creates a file called "Vagrantfile". Afterward, this file could be modified depending on the precise configuration you want. 
+By executing this command, the current directory is now a Vagrant environment. Consequently, this is where you have to execute the Vagrant commands for your future running VM for example. This aspect facilitates the isolation of different Vagrant environment directories. The environment on a directory will have no impact on other environment on the computer. 
 
 # Launching the VM
 
@@ -49,17 +59,25 @@ After the installation of Vagrant, we have to configure a provider. In fact, Vag
 
 >vagrant up --provider=virtualbox
 
-It will automatically find, download (on vagrantcloud) and install the box. The box is added for the provider (VirtualBox).
+It will automatically search, find, download (on vagrantcloud) and install the box. The box is added for the provider (VirtualBox).
 
-You can see the status of the running VM by doing:
+You can see the current status (running or not) of the running VM by doing (on the concerned directory):
 
 >vagrant status 
+
+Particular cases:
+
+- If you have many VMs running on your machine and need to list the status of every VMs, you can also execute a command from any directory:
+
+>vagrant global-status
+
+- If you want to execute a command on a VM from another directory, you can do it using its ID rather that to change to its environment directory (the ID is displayed when using the command vagrant global-status).
 
 **Warning**: Vagrant create a ".vagrant" folder. Make sure you specified the .vagrant folder in the .gitignore file. In fact, if you upload the .vagrant folder, it will let your repository be heavier and sometimes it could "break" it. You don't need this folder in your repository, the vagrantfile is enough (it contains all the needed information to initialize a VM). 
 
 # Connection to the VM
 
-Now that your VM is running, you can directly connect to it through SSH with the command:
+Vagrant includes a built-in SSH system to authenticate and connect to a running VM that supports the SSH protocol. Now that your VM is running, you can directly connect to it through SSH with the command:
 
 >vagrant ssh 
 
@@ -101,7 +119,7 @@ config.vm.provider "virtualbox" do |vb|
 end
 ```
 
-- Memory & CPU settings can also be customized:
+- The amount of memory to allocate to the box & virtual CPUs settings can also be customized:
 
 ```
 config.vm.provider "virtualbox" do |v|
@@ -110,8 +128,10 @@ config.vm.provider "virtualbox" do |v|
 end
 ```
 
-- The network can also be managed, whether you need to put your VM on a private or public network, through a static or dynamic IP address. 
+- Vagrant supports multiple networking configuration options for virtual machines. The network can also be managed, whether you need to put your VM on a private or public network, through a static or dynamic IP address. 
 
-# To be developed 
+- When running your VM for the first time, you can configure provisioners that will install softwares and set configurations, like Ansible, Chef, Docker, Puppet, Salt, Apache, etc. 
 
-shared folder 
+# Shared Folder
+
+Files on the host can be synchronized with files in a Vagrant VM and vice versa. 
