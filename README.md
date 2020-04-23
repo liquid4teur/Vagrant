@@ -43,7 +43,7 @@ In order to initialize our vagrant environment, we need to execute the following
 
 The execution of this command creates a file called "Vagrantfile". Afterward, this file could be modified depending on the precise configuration you want. 
 
-# Launch the VM
+# Launching the VM
 
 After the installation of Vagrant, we have to configure a provider. In fact, Vagrant lauches the VM with the help of a provider. VirtualBox is installed on my laptop. So for the first launch of the environment, I set the provider with VirtualBox:
 
@@ -81,6 +81,14 @@ If you want to restart your VM, you can do it with the command:
 
 >vagrant up
 
+If you need to destroy you VM, you can do it with the command: 
+
+>vagrant destroy 
+
+After destroying your VM, if you can also remove the box installed in the system with the command:
+
+>vagrant box remove
+
 # Managing the configuration 
 
 The VirtualBox provider exposes some additional configuration options that allow you to more finely control your VirtualBox-powered Vagrant environments:
@@ -93,7 +101,7 @@ config.vm.provider "virtualbox" do |vb|
 end
 ```
 
-- Memory & CPU settings 
+- Memory & CPU settings can also be customized:
 
 ```
 config.vm.provider "virtualbox" do |v|
