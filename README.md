@@ -12,13 +12,26 @@ Once you installed Vagrant, when running your command prompt you can see the dif
 
 >vagrant list-commands 
 
+**Warning**: If you wish to use VirtualBox on Windows, you must ensure that Hyper-V is not enabled on Windows. You can turn off the feature by running this Powershell command:
+
+>Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All
+
+You can also disable it by going through the Windows system settings:
+
+- Right click on the Windows button and select ‘Apps and Features’.
+- Select Turn Windows Features on or off.
+- Unselect Hyper-V and click OK.
+- You might have to reboot your machine for the changes to take effect.
+
+Also, VirtualBox Guest Additions must be installed so that things such as shared folders can function. Installing guest additions also usually improves performance since the guest OS can make some optimizations by knowing it is running within VirtualBox.
+
 # Configuration 
 
 We first initialize a vagrant environment. We need an Ubuntu 16.04 environment and we have VirtualBox installed: 
 
 - We have go the Vagrant box [page](https://app.vagrantup.com/boxes/search), 
 - Then we searche the box we need, in our case we need an Ubuntu 16.04 environment working with a VirtualBox provider, 
-- We see that ubuntu/trusty64 box matches and is the most downloaded. 
+- We see that bento/ubuntu-16.04 box matches and is the most downloaded. 
 
 Note that you have to execute the vagrant commands where the vagrant environment is set. 
 
@@ -68,15 +81,29 @@ If you want to restart your VM, you can do it with the command:
 
 >vagrant up
 
+# Managing the configuration 
+
+The VirtualBox provider exposes some additional configuration options that allow you to more finely control your VirtualBox-powered Vagrant environments:
+
+- You can customize the name that appears in the VirtualBox GUI by setting the name property:
+
+```
+config.vm.provider "virtualbox" do |vb|
+  vb.name = "my_vm"
+end
+```
+
+- Memory & CPU settings 
+
+```
+config.vm.provider "virtualbox" do |v|
+  v.memory = 1024
+  v.cpus = 2
+end
+```
+
+- The network can also be managed, whether you need to put your VM on a private or public network, through a static or dynamic IP address. 
+
 # To be developed 
 
-gitignore 
-
 shared folder 
-
-rename vm (web_1..)
-
-command installed on mac 
-- Brew http://macappstore.org/rename/
-- Rename -> brew install rename 
-- wget -> brew install wget 
