@@ -7,7 +7,7 @@ It's good to know that Vagrant uses a single file format to build, run and manag
 In order to work with Vagrant, there are three important components:
 - The CLI: you will use it to start and stop Vagrant VMs, initialize new Vagrant environments and manage running VMs. 
 - The Vagrantfile: it defines Vagrant VMs and is a small program written in Ruby language and executed by the CLI in order to run a Vagrant VM.
-- Vagrant cloud: Hashicorp, the maker of Vagrant, provides a vagrant cloud as an online market place for public virtual machines. Users of Vagrant can also publish their own Vagrant VMs publicly or use a private account to restrict access.
+- Vagrant cloud: Hashicorp, the maker of Vagrant, provides a [vagrant cloud](https://app.vagrantup.com) as an online market place and a browser for public virtual machines. Users of Vagrant can also publish their own Vagrant VMs publicly or use a private account to restrict access.
 
 For this demonstration, we are going to use Ubuntu 16.04. 
 
@@ -75,9 +75,11 @@ Particular cases:
 
 **Warning**: Vagrant create a ".vagrant" folder. Make sure you specified the .vagrant folder in the .gitignore file. In fact, if you upload the .vagrant folder, it will let your repository be heavier and sometimes it could "break" it. You don't need this folder in your repository, the vagrantfile is enough (it contains all the needed information to initialize a VM). 
 
-# Connection to the VM
+# Connection to the VM/Box
 
-Vagrant includes a built-in SSH system to authenticate and connect to a running VM that supports the SSH protocol. Now that your VM is running, you can directly connect to it through SSH with the command:
+Vagrant includes a built-in SSH system to authenticate and connect to a running VM that supports the SSH (Secure Socket Shell) protocol. Vagrant configures boxes at start-up with a common security configuration and a standard key pair for SSH authentication. This authentication method works on boxes/VMs that supports SSH (Linux operating system for example).
+
+Now that your VM is running, you can directly connect to it through the Vagrant CLI command from the Vagrant environment directory with the command:
 
 >vagrant ssh 
 
@@ -91,7 +93,7 @@ You can suspend your VM with the command:
 
 >vagrant suspend 
 
-You can shutdown your VM forcefully with the command: 
+You can shutdown your VM gracefully with the command (after that, you can restart it at any time wi): 
 
 >vagrant halt 
 
@@ -99,7 +101,7 @@ If you want to restart your VM, you can do it with the command:
 
 >vagrant up
 
-If you need to destroy you VM, you can do it with the command: 
+You can destroy your VM (it will delete all of the resources associated with the box in the environment, but it will leave the vagrantfile intact), you can do it with the command: 
 
 >vagrant destroy 
 
@@ -135,3 +137,7 @@ end
 # Shared Folder
 
 Files on the host can be synchronized with files in a Vagrant VM and vice versa. 
+
+# Go Further 
+
+You can sign up for a Vagrant cloud account, which is free, and upload your own public boxes. If you want to store private boxes, you can sign up for paid account tiers. Vagrant cloud is not the only option to store boxes, you can set up your own private store with a simple web server for a private company network for example. 
