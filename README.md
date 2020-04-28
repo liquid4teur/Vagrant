@@ -109,7 +109,9 @@ After destroying your VM, if you can also remove the box installed in the system
 
 >vagrant box remove
 
-# Managing the configuration 
+# Managing the configuration through the Vagrantfile
+
+Vagran boxes are configured using a vagrantfile. Vagrantfiles are simple Ruby programs (easy to read and write) used by the Vagrant CLI to set attributes of a vagrant box (such as CPU, memory, disk and network configurations). Vagrantfiles are mostly single line statements.
 
 The VirtualBox provider exposes some additional configuration options that allow you to more finely control your VirtualBox-powered Vagrant environments:
 
@@ -141,3 +143,9 @@ Files on the host can be synchronized with files in a Vagrant VM and vice versa.
 # Go Further 
 
 You can sign up for a Vagrant cloud account, which is free, and upload your own public boxes. If you want to store private boxes, you can sign up for paid account tiers. Vagrant cloud is not the only option to store boxes, you can set up your own private store with a simple web server for a private company network for example. 
+
+# Resources 
+
+I managed this repo using VS Code wih Vagrantfile Support extension (syntax highlighting for Ruby). 
+
+Bibliographie.. 
