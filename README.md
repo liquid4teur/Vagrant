@@ -105,6 +105,10 @@ You can destroy your VM (it will delete all of the resources associated with the
 
 >vagrant destroy 
 
+You can restart your VM if you want to refresh after some modifications (it's a combination of "vagrant halt" and "vagrant up"):
+
+>vagrant reload
+
 After destroying your VM, if you can also remove the box installed in the system with the command:
 
 >vagrant box remove
@@ -136,9 +140,26 @@ end
 
 - When running your VM for the first time, you can configure provisioners that will install softwares and set configurations, like Ansible, Chef, Docker, Puppet, Salt, Apache, etc. 
 
-# Shared Folder
+# Shared Synchronized Folder
 
-Files on the host can be synchronized with files in a Vagrant VM and vice versa. 
+## The default folder
+
+Files can be synchronized inside a folder on the host operating system to a folder in a virtual machine (Vagrant VM). Vagrant do it by default and synchronize two folders:
+- On the host operating system, the folder synchronized is the folder where your Vagrant environment is running. 
+- On the virtual machine, the folder synchronized (on the root) is the vagrant folder (/vagrant). 
+Every files added, deleted or modified in this folder can be done from the host operating system or the virtual machine.
+
+## Synchronize your own folder
+
+You can modify the default configuration and synchronize your own folder. 
+On the default Vagrantfile, at line 46, you have to uncomment the following line:
+
+```
+config.vm.synced_folder "../data", "/vagrant_data"
+``` 
+
+- The first parameter is the folder on the host to be mapped and the path is relative to the current Vagrant environment.
+- The next parameter is the path to which the synced folder will be mapped in the box. 
 
 # Go Further 
 
