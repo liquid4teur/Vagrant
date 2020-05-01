@@ -117,6 +117,8 @@ After destroying your VM, if you can also remove the box installed in the system
 
 Vagran boxes are configured using a vagrantfile. Vagrantfiles are simple Ruby programs (easy to read and write) used by the Vagrant CLI to set attributes of a vagrant box (such as CPU, memory, disk and network configurations). Vagrantfiles are mostly single line statements.
 
+## Name
+
 The VirtualBox provider exposes some additional configuration options that allow you to more finely control your VirtualBox-powered Vagrant environments:
 
 - You can customize the name that appears in the VirtualBox GUI by setting the name property:
@@ -127,6 +129,8 @@ config.vm.provider "virtualbox" do |vb|
 end
 ```
 
+## Resources
+
 - The amount of memory to allocate to the box & virtual CPUs settings can also be customized:
 
 ```
@@ -136,7 +140,53 @@ config.vm.provider "virtualbox" do |v|
 end
 ```
 
-- Vagrant supports multiple networking configuration options for virtual machines. The network can also be managed, whether you need to put your VM on a private or public network, through a static or dynamic IP address. 
+## Network 
+
+- Vagrant supports multiple networking configuration options for virtual machines. Vagrant supports 3 primary network configurations for VMs:
+
+  - Port forwarding
+
+A port is a number between 1 and 65555 and is used like a channel for TCP communication. Vagrant can forward requests that are sent to a port on the host network to the same or different port on the box network. 
+
+To demonstrate the port forwarding, I installed a web server (nginx) on the ubuntu box:
+```
+>vagrant ssh
+>sudo apt-get update
+>sudo apt-get install -y nginx 
+>curl localhost
+```
+The command "curl localhost" let us see the nginx default response in raw HTML directly in the command prompt. 
+
+Now, for the port forwarding, we have to modify the Vagrantfile by uncommenting the line 31 (more secure than the configuration at line 26, the box is not exposed to the host network):
+```
+config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+```
+This configuration allows nginx to listen on port 80 on the box network interface. Requests sent to port 8080 on the host will be forwarded to the port 80 on the guest.
+After the modification of the configuration through the Vagrantfile, reload your box (with "vagrant reload"). 
+Now, if you open a browser on your host machine and go to localhost:8080, you should see the nginx default page appear. The nginx server working on your box is now accessible on your browser through the port forwarding (amazing!).
+
+  - Private network
+
+Following the port forwarding, we'll also put a private network for the box. It will isolated it from the public network and ensure its security.
+At line 35, uncomment it: 
+```
+config.vm.network "private_network", ip: "192.168.33.10"
+```
+Instead of configure a precise ip address, replace the ip address by "dhcp":
+```
+config.vm.network "private_network", type: "dhcp"
+```
+This configuration will use a dhcp server to assign a private non-routable ip address. It can be accessed by any other subnet. In this case, it helps us create isolated networks and it's useful for security and testing purposes. 
+
+After restarting your box (with "vagrant reload"), run the following command:
+>ifconfig 
+You'll see an IP address beginning with 172 which is one the private address ranges defined by the TCP protocol. Vagrant uses the virtual box host only network option to create a private network that is accessible to the host but no other systems. 
+
+  - Public network
+
+Vagrant boxes are insecure by default with known username and password combinations and insecure cryptographic keys. Securing a VM for use in a public network 
+
+## Provisioners 
 
 - When running your VM for the first time, you can configure provisioners that will install softwares and set configurations, like Ansible, Chef, Docker, Puppet, Salt, Apache, etc. 
 
