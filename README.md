@@ -131,13 +131,32 @@ end
 
 ## Resources
 
+Vagrant providers allow Vagrant to define a box for a particular hypervisor (Vagrant includes built-in providers for VirtualBox and Hyper-V). Providers section of a Vagrantfile (beginning at line 52 of the vagrantfile) is used to set provider-specific configurations such as CPU, memory and other configurations.
+
 - The amount of memory to allocate to the box & virtual CPUs settings can also be customized:
 
 ```
-config.vm.provider "virtualbox" do |v|
-  v.memory = 1024
-  v.cpus = 2
+config.vm.provider "virtualbox" do |vb|
+  vb.memory = "1024"
+  vb.cpus = 2
 end
+```
+
+You can verify the memory allocated with the linux command:
+>vmstat -s
+
+You can verify the virtual CPUs allocated with the linux command:
+>lscpu
+
+- With the basic configuration of Vagrant, boxes are running in headless mode (we've been connecting via SSH using the vagrant ssh command to do work in the box), which means that it has not dedicated window of its own. You can also enable the possibility to display the VirtualBox GUI when booting the machine: 
+
+```
+vb.gui = true
+```
+
+You can add more video RAM allocated to the box to support a graphical interface. It will help you have a bigger window displayed. Add this line to the provider section of the Vagrantfile:
+```
+vb.customize ["modifyvm", :id, "--vram", "16"]
 ```
 
 ## Network 
