@@ -129,7 +129,7 @@ config.vm.provider "virtualbox" do |vb|
 end
 ```
 
-## Resources
+## Resources & Providers
 
 Vagrant providers allow Vagrant to define a box for a particular hypervisor (Vagrant includes built-in providers for VirtualBox and Hyper-V). Providers section of a Vagrantfile (beginning at line 52 of the vagrantfile) is used to set provider-specific configurations such as CPU, memory and other configurations.
 
@@ -257,6 +257,27 @@ config.vm.synced_folder "../data", "/vagrant_data"
 - The next parameter is the path to which the synced folder will be mapped in the box. 
 
 # Go Further 
+
+## NodeJS Application
+
+### Goal we want to achieve
+
+We'll be using a simple Node application to demonstrate the steps required to create and prepare a Node runtime and development environment (the principles are similar for Java, Python, Ruby or any other type of application). It's a simple node application that exposes a to-do list web service. The web service returns a list of to-do tasks and accepts post requests to add and update tasks.
+
+We'll be adding a Vagrantfile to this code to define a Node developmet environment. We'll use:
+
+- A synchronized folder: the application code will reside on the host and with the synced folder it will automatically synchronize that code with the code in the Vagrant box (it will allow us to edit the code in VSCode on the host, and the changes take effect as they are synchronized).
+- Port forwarding: it will help us expose the Node application to the host browser.
+- A provider: it will help us set the right amount of memory for our application.
+- A provisioner: we'll have a script to install all the necessary software and set configurations we need to run a Node application.
+
+The result of this set-up will be a custom box based on Ubuntu base box and it will include all the necessary software installations to run the application. We will also configure the Node application to automatically start on boot
+
+### How we do it 
+
+
+
+## Create your own box
 
 You can sign up for a Vagrant cloud account, which is free, and upload your own public boxes. If you want to store private boxes, you can sign up for paid account tiers. Vagrant cloud is not the only option to store boxes, you can set up your own private store with a simple web server for a private company network for example. 
 
