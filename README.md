@@ -182,7 +182,7 @@ config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
 ```
 This configuration allows nginx to listen on port 80 on the box network interface. Requests sent to port 8080 on the host will be forwarded to the port 80 on the guest.
 After the modification of the configuration through the Vagrantfile, reload your box (with "vagrant reload"). 
-Now, if you open a browser on your host machine and go to localhost:8080, you should see the nginx default page appear. The nginx server working on your box is now accessible on your browser through the port forwarding (amazing!).
+Now, if you open a browser on your host machine and go to localhost:8080 (or 127.0.0.1:8080), you should see the nginx default page appear. The nginx server working on your box is now accessible on your browser through the port forwarding (amazing!).
 
   - Private network
 
@@ -191,6 +191,7 @@ At line 35, uncomment it:
 ```
 config.vm.network "private_network", ip: "192.168.33.10"
 ```
+
 Instead of configure a precise ip address, replace the ip address by "dhcp":
 ```
 config.vm.network "private_network", type: "dhcp"
@@ -207,7 +208,32 @@ Vagrant boxes are insecure by default with known username and password combinati
 
 ## Provisioners 
 
-- When running your VM for the first time, you can configure provisioners that will install softwares and set configurations, like Ansible, Chef, Docker, Puppet, Salt, Apache, etc. 
+Vagrant provisioners are scripts that can be defined inline in a Vagrantfile or externally in a separate file (as external script). By default, provisioners are executed the first time a box runs. They are used to set up a base box for a particular purpose. Provisioners can:
+
+- Install softwares,
+- Download application code,
+- Set configurations needed for a particular environment.
+
+Previously, in the network part of this readme, we installed a nginx web server manually. This time we'll do it through a provisioner inside the Vagrantfile. To do so, we'll create an external bash script (executable on linux) nginx-install.sh with those two lines: 
+
+```
+sudo apt-get update
+sudo apt-get install -y nginx
+```
+
+This script will be added to the Vagrantfile and will install a nginx web server. At line 67, we uncomment the provisioning section and precise the path to the bash script:
+```
+config.vm.provision "shell", path: "provisioners/nginx-install.sh"
+```
+
+You can verify the presence of nginx with the command:
+>nginx -v
+
+If the box was running before the configuration of the script, you have to destroy the box and start it again (because provisioners are executed the first time a box runs).
+
+I also kept the previous network configuration with the port forwarding and consequently the nginx webserver is now accessible via my web browser.
+
+You can configure provisioners that will install softwares and set configurations, like Ansible, Chef, Docker, Puppet, Salt, Apache, etc. Other provisioners include file provisioners which copy files from the host machine to the box on first boot.
 
 # Shared Synchronized Folder
 
