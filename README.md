@@ -275,7 +275,7 @@ We create our vagrantfile in "multi-env" folder:
 
 ### Defining Multiple Machines
 
-Multiple machines are defined within the same Vagrantfile using the **config.vm.define** method call:
+Multiple machines are defined within the same Vagrantfile using the **config.vm.define** method call. We create a new object for each box using **define** and with that we can introduce two different blocks for the two boxes we want to create.
 
 ```
 Vagrant.configure("2") do |config|
@@ -320,6 +320,8 @@ Working this way, you have two boxes ("web" & "db") running in one Vagrant envir
 
 - To connect to the "db" box:
 >vagrant ssh db
+
+You'll have to work the same way if you want to only boot one of the two boxes separately (vagrant up web or vagrant up db).
 
 On the host, we can also see that nginx is working well by going to localhost:8080 on the browser.
 
