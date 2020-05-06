@@ -256,7 +256,72 @@ config.vm.synced_folder "../data", "/vagrant_data"
 - The first parameter is the folder on the host to be mapped and the path is relative to the current Vagrant environment.
 - The next parameter is the path to which the synced folder will be mapped in the box. 
 
-# Go Further 
+# Go Deeper
+
+## Multi-machine configuration & Production
+
+By default, Vagrant files start a single box.
+
+Vagrant is useful for testing software (through test environments) in a sandbox environment. But applications are usually run in production environments with application in one server and databases on a separate server. 
+
+Vagrant can run boxes in the same way, with multi-machine vagrantfiles. Vagrant is able to define and control multiple guest machines per Vagrantfile inside one "multi-machine" environment. You don't need to create many environments to run different boxes. In this case, only one Vagrant environment can run multiple machines and it's useful in many cases:
+- Modeling a multi-server production, such as separating a web and database server.
+- Modeling a distributed system and how they interact with each other.
+- Testing an interface, such as an API to a service component.
+- Disaster-case testing: machines dying, network partitions, slow networs, etc.
+
+We create our vagrantfile in "multi-env" folder:
+>vagrant init bento/ubuntu-16.04
+
+### Defining Multiple Machines
+
+Multiple machines are defined within the same Vagrantfile using the **config.vm.define** method call:
+
+```
+Vagrant.configure("2") do |config|
+
+  config.vm.define "db" do |db|
+    db.vm.box = "bento/ubuntu-16.04"
+    db.vm.provider "virtualbox" do |vb|
+      vb.memory = "512"
+    end
+    db.vm.network "private_network", ip: "192.168.33.20"
+    db.vm.provision "shell", path: "provisioners/install-mongo.sh"
+  end 
+
+  config.vm.define "web" do |web|
+    web.vm.box = "bento/ubuntu-16.04"
+    web.vm.network "forwarded_port", guest: 80, host: 8080
+    web.vm.provider "virtualbox" do |vb|
+      vb.memory = "512"
+    end
+    web.vm.network "private_network", ip: "192.168.33.10"
+    web.vm.provision "shell", path: "provisioners/nginx-install.sh"
+  end
+```
+
+The two boxes will be on the same private network with a different fixed IP address.
+- The "db" box will be based on ubuntu 16.04, with 512MB of memory, a fixed IP address "192.168.33.20" and the provisioner script to install mongo will be launched on boot.
+- The "web" box will also be based on ubuntu 16.04, with 512MB of memory, a fixed IP address "192.168.33.10", a forwarded port from port 80 on the guest to the port 8080 on the host and the provisioner script to install nginx will be launched on boot.
+
+
+We also comment the original line:
+```
+config.vm.box = "bento/ubuntu-16.04"
+```
+Now we can launch the vagrant environment by doing:
+>vagrant up 
+
+By doing "vagrant status" we can see that we have two virtual machines running.
+
+Working this way, you have two boxes ("web" & "db") running in one Vagrant environment. If you want to connect to those boxes through SSH, the commands change a little bit:
+- To connect to the "web" box:
+>vagrant ssh web
+
+- To connect to the "db" box:
+>vagrant ssh db
+
+On the host, we can also see that nginx is working well by going to localhost:8080 on the browser.
 
 ## Create your own box
 

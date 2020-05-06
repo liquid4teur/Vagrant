@@ -1,4 +1,5 @@
 # exclude generated vagrant boxes
 
 /ubuntu_16.04_web1/.vagrant
+/multi_env/.vagrant
 **/.DS_Store
