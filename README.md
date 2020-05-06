@@ -314,7 +314,7 @@ Now we can launch the vagrant environment by doing:
 
 By doing "vagrant status" we can see that we have two virtual machines running.
 
-Working this way, you have two boxes ("web" & "db") running in one Vagrant environment. If you want to connect to those boxes through SSH, the commands change a little bit:
+Working this way, you have two boxes ("web" & "db") running in one Vagrant environment. If you want to connect to those boxes through SSH, the commands change a little bit by including the name of the box:
 - To connect to the "web" box:
 >vagrant ssh web
 
