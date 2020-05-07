@@ -327,7 +327,34 @@ On the host, we can also see that nginx is working well by going to localhost:80
 
 ## Create your own box
 
-You can sign up for a Vagrant cloud account, which is free, and upload your own public boxes. If you want to store private boxes, you can sign up for paid account tiers. Vagrant cloud is not the only option to store boxes, you can set up your own private store with a simple web server for a private company network for example. 
+You can sign up for a Vagrant cloud account, which is free, and upload your own public boxes. If you want to store private boxes, you can sign up for paid account tiers. Vagrant cloud is not the only option to store boxes, you can set up your own private store with a simple web server for a private company network for example.
+
+The starter application you could add to the based box could be added by a provisioner. However, that provisioner take time to run and the first boot of a development environment could take 30 minutes or more. If a software should be part of the box from the beginning, it's better a create a custom box with the concerned software.
+
+Vagrant includes a command that can produce a new base box:
+>vagrant package
+
+The package command takes an existing box and packages it as a new base box.
+
+We'll demonstrate the creation of our own box into another Vagrant environment "box_creation".
+In my case, I want to package a box with nginx already installed. 
+
+As usual, we begin by initializing our Vagrantfile:
+
+>vagrant init bento/ubuntu-16.04
+
+We also parameter the networking forwarding in order to see directly the result on the host:
+
+```
+config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+```
+
+This time, into the vagrantfile I'll not configure a provisioner (it will be done later).
+
+And now we launch our box with:
+>vagrant up
+
+To create a custom box, this vagrantfile will be packaged with the box and will be part of the vagrantfile load order.
 
 # Kill a process
 

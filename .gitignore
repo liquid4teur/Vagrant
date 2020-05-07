@@ -2,4 +2,5 @@
 
 /ubuntu_16.04_web1/.vagrant
 /multi_env/.vagrant
+/box_creation/.vagrant
 **/.DS_Store
