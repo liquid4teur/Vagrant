@@ -355,6 +355,22 @@ And now we launch our box with:
 >vagrant up
 
 To create a custom box, this vagrantfile will be packaged with the box and will be part of the vagrantfile load order.
+Now, we have to enter the command: 
+
+>vagrant package --vagrantfile Vagrantfile --output box_creation.box
+
+- The "--vagrantfile" parameter instructs Vagrant to include the Vagrantfile indicated in the path.
+- The "--output" parameter indicates the name of the file to create.
+
+When the packaging process is finished, we'll see the box_creation.box file in the root of the environment directory.
+
+The next step is to add this box to the local box cache. With the command "vagrant box list", we can list all the boxes in the local host box cache.
+Now we add our custom box the box list with the command (first parameter: name we want to give, second parameter: name of the box):
+
+>vagrant box add custom_box box_creation.box
+
+Now our box is added to the local cache (you can verify it with "vagrant box list"). 
+Also, if your repository is synchronized with github, don't forget to add the box you created into a .gitignore otherwise you could accidentally upload it to github.
 
 # Kill a process
 
