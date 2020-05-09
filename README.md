@@ -89,9 +89,11 @@ To exit the ssh session, simply execute the command:
 
 # Managing the VM 
 
-You can suspend your VM with the command:
+You can suspend your VM. The suspend command is similar to the hibernate feature of a laptop. The box is unloaded from memory but not shot down. The contents of the box RAM are written to the disk. You can do so with the command:
 
 >vagrant suspend 
+
+After a "vagrant suspend", you can bring back the VM to exactly the same state as it was when it was suspended.
 
 You can shutdown your VM gracefully with the command (after that, you can restart it at any time wi): 
 
@@ -390,7 +392,37 @@ Now if you create another vagrant environment (in another folder), you can use t
 
 ## Upload a box to Vagrant Cloud
 
+You can upload your custom box to Vagrant Cloud and let it be available for the public or for a private group. 
+You have to:
+- Create an account on Vagrant Cloud,
+- From the Dashboard, click on New Vagrant Box,
+- The organization name will be your account name and then you have to name your box on Vagrant Cloud, 
+- If you want to let your box private, you can do so but it requires a paid Vagrant Cloud account,
+- Enter a short description about the box, 
+- Click on "create your box",
+- Version your box (even if it's the first release),
+- Enter a short description about the version of the box
+- And click on "create version".
 
+The box is now created on Vagrant Cloud but it has no providers and is not released. The next step is to create a box file for upload.
+For the next steps, we have to:
+- Add a provider,
+- Select VirtualBox as a provider,
+- Select "Upload to Vagrant Cloud" for File Hosting,
+- Then, after clicking on "Choose File", we select the custom.box we created (or any other box you created on your host) to upload it (the uploading could take time depending on your internet connection).
+
+The box now has a provider with an associated box file. Now we have to release this version by clicking on "Realease".
+The box is now published to the public Vagrant Cloud.
+
+I personnaly did it on Vagrant Cloud, you can see it at this [URL](https://app.vagrantup.com/liquidateur/boxes/custom/versions/0.0.1).
+
+We can give a try to it. The box is available at "liquidateur/custom" (account name and name of the box). You can initialize your Vagrant environment with this box by typing:
+>vagrant init liquidateur/custom
+
+It will create a Vagrantfile and now you can boot it with:
+>vagrant up
+
+The vagrant up command will locate the box on Vagrant Cloud, downloa it and add it to the local box cache (you can see it with vagrant box list).
 
 # Kill a process
 
@@ -399,6 +431,22 @@ Rarely, a vagrant process could freeze (sometimes because of the provisioner). Y
 >pkill vagrant
 or
 >pkill ruby
+
+# Go back to a previous state
+
+You can save a current state of a box, in case your future developments could affect the box.
+If the VM brakes, you can go back.
+To do so, you can save the current state of a box with the command:
+>vagrant snapshot save name_of_the_state
+
+Then, in the future, you can restore the snapshot and go back to this state by doing:
+>vagrant snapshot restore name_of_the_state
+
+Keep in mind that each snapshot takes up some space on the hard drive.
+
+# Do more
+
+Vagrant is extensible and also has plugins for custom-synced folder capabilities, DNS, and many others. There is a list on Github where you can see all the HashiCorp and third party plugins available for Vagrant.
 
 # Resources 
 
