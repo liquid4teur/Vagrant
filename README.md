@@ -331,11 +331,6 @@ You can sign up for a Vagrant cloud account, which is free, and upload your own 
 
 The starter application you could add to the based box could be added by a provisioner. However, that provisioner take time to run and the first boot of a development environment could take 30 minutes or more. If a software should be part of the box from the beginning, it's better a create a custom box with the concerned software.
 
-Vagrant includes a command that can produce a new base box:
->vagrant package
-
-The package command takes an existing box and packages it as a new base box.
-
 We'll demonstrate the creation of our own box into another Vagrant environment "box_creation".
 In my case, I want to package a box with nginx already installed. 
 
@@ -343,38 +338,63 @@ As usual, we begin by initializing our Vagrantfile:
 
 >vagrant init bento/ubuntu-16.04
 
-We also parameter the networking forwarding in order to see directly the result on the host:
+We also parameter the networking forwarding in order to see directly the result on the host and the provider to install nginx:
 
 ```
 config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
 ```
-
-This time, into the vagrantfile I'll not configure a provisioner (it will be done later).
+```
+config.vm.provision "shell", path: "provisioners/nginx-install.sh"
+```
 
 And now we launch our box with:
 >vagrant up
 
-To create a custom box, this vagrantfile will be packaged with the box and will be part of the vagrantfile load order.
+Now, we have a box running with nginx and the port forwarding allows us to see it on the host on port 8080.
+This box is ready and we want to package it with the Vagrantfile. 
+To do so, we need to suppress the modifications we added to this Vagrantfile (with the provisioner). 
+In fact, if we package a box already set with nginx (provisioner) and we keep the same Vagrantfile (with the nginx provisioner), it will install nginx a second time, and we don't want that (we'll lose a precious time). That's why we suppress the modifications we added on th provider we only keep the lines:
+
+```
+config.vm.box = "bento/ubuntu-16.04"
+```
+```
+config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+```
+
+Now we are ready to go and prepare our custom box. Vagrant includes a command that can produce a new base box:
+>vagrant package
+
+The package command takes an existing box and packages it as a new base box.
+
+To create a custom box, the vagrantfile in the folder (without the modifications) will be packaged with the box and will be part of the vagrantfile load order.
 Now, we have to enter the command: 
 
->vagrant package --vagrantfile Vagrantfile --output box_creation.box
+>vagrant package --vagrantfile Vagrantfile --output custom.box
 
 - The "--vagrantfile" parameter instructs Vagrant to include the Vagrantfile indicated in the path.
 - The "--output" parameter indicates the name of the file to create.
 
-When the packaging process is finished, we'll see the box_creation.box file in the root of the environment directory.
+When the packaging process is finished, we'll see the custom.box file in the root of the environment directory.
 
 The next step is to add this box to the local box cache. With the command "vagrant box list", we can list all the boxes in the local host box cache.
-Now we add our custom box the box list with the command (first parameter: name we want to give, second parameter: name of the box):
+Now we add our custom box the box list with the command (first parameter: name we want to give, second parameter: name of the box we packaged):
 
->vagrant box add custom_box box_creation.box
+>vagrant box add custom custom.box
 
 Now our box is added to the local cache (you can verify it with "vagrant box list"). 
-Also, if your repository is synchronized with github, don't forget to add the box you created into a .gitignore otherwise you could accidentally upload it to github.
+Also, if your repository is synchronized with github, don't forget to add the box you created into a .gitignore, otherwise you could accidentally upload it to github.
+
+Now if you create another vagrant environment (in another folder), you can use this box (added to the local cache) when you initialize your vagrant environment:
+>vagrant init custom
+
+## Upload a box to Vagrant Cloud
+
+
 
 # Kill a process
 
-Rarely, if a vagrant process freezes because of the provisioner. You can kill the process with the following command:
+Rarely, a vagrant process could freeze (sometimes because of the provisioner). You can kill the process with the following command:
 
 >pkill vagrant
 or
