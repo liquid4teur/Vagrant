@@ -452,4 +452,42 @@ Vagrant is extensible and also has plugins for custom-synced folder capabilities
 
 I managed this repo using VS Code wih Vagrantfile Support extension (syntax highlighting for Ruby). 
 
-Bibliographie.. 
+# Bibliographie
+
+# SSH Trick
+
+First of all, be sure that you set a private network with an IP address in the vagrantfile.
+If you want to connect to the Vagrant box through SSH without having to be inside the vagrant environment, you can do it with these steps:
+
+- Go the concerned vagrant environment and type:
+> vagrant ssh-config 
+
+It will print the configuration used by the vagrant environment, for example:
+```
+Host default
+  HostName 127.0.0.1
+  User vagrant
+  Port 2200
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  PasswordAuthentication no
+  IdentityFile /Users/aey1/Sites/demo/.vagrant/machines/default/virtualbox/private_key
+  IdentitiesOnly yes
+  LogLevel FATAL
+```
+
+We will copy this configuration inside a "config" file on the host (~/.ssh/config). But before that, we have to replace the IP address with the private IP address and change the configuration with this output:
+```
+Host 192.168.50.4
+  User vagrant
+  Port 22
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  PasswordAuthentication no
+  IdentityFile /Users/aey1/Sites/demo/.vagrant/machines/default/virtualbox/private_key
+  IdentitiesOnly yes
+  LogLevel FATAL
+```
+
+Now, in this case, you can connect to the Vagrant box with the command:
+>ssh 192.168.50.4
