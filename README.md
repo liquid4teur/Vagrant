@@ -34,7 +34,7 @@ You can also disable it by going through the Windows system settings:
 
 **Warning (3)**: Verify that Intel VT-x (or Hardware Virtualization Feature) is enabled. It helps accelerate virtual machines created in a hypervisor. 
 
-# Configuration 
+# Getting started 
 
 We first initialize a vagrant environment. We need an Ubuntu 16.04 environment and we have VirtualBox installed: 
 
@@ -44,7 +44,7 @@ We first initialize a vagrant environment. We need an Ubuntu 16.04 environment a
 
 Also, note that "box" is a general term for a Vagrant VM. A box is a copressed file that contains all the files needed to start a Vagrant virtual machine. 
 
-# Initialization 
+## Initialization 
 
 In order to initialize our vagrant environment, we need to execute the following command (the first part of the command is the organization name and the second part is the distribution inversion): 
 
@@ -53,7 +53,7 @@ In order to initialize our vagrant environment, we need to execute the following
 The execution of this command creates a file called "Vagrantfile". Afterward, this file could be modified depending on the precise configuration you want. 
 By executing this command, the current directory is now a Vagrant environment. Consequently, this is where you have to execute the Vagrant commands for your future running VM for example. This aspect facilitates the isolation of different Vagrant environment directories. The environment on a directory will have no impact on other environment on the computer. 
 
-# Launching the VM
+## Launching the VM
 
 After the installation of Vagrant, we have to configure a provider. In fact, Vagrant lauches the VM with the help of a provider. VirtualBox is installed on my laptop. So for the first launch of the environment, I set the provider with VirtualBox:
 
@@ -75,7 +75,7 @@ Particular cases:
 
 **Warning**: Vagrant create a ".vagrant" folder. Make sure you specified the .vagrant folder in the .gitignore file. In fact, if you upload the .vagrant folder, it will let your repository be heavier and sometimes it could "break" it. You don't need this folder in your repository, the vagrantfile is enough (it contains all the needed information to initialize a VM). 
 
-# Connection to the VM/Box
+## Connection to the VM/Box
 
 Vagrant includes a built-in SSH system to authenticate and connect to a running VM that supports the SSH (Secure Socket Shell) protocol. Vagrant configures boxes at start-up with a common security configuration and a standard key pair for SSH authentication. This authentication method works on boxes/VMs that supports SSH (Linux operating system for example).
 
@@ -88,6 +88,10 @@ To exit the ssh session, simply execute the command:
 >exit 
 
 # Managing the VM 
+
+Vagran boxes are configured using a vagrantfile. Vagrantfiles are simple Ruby programs (easy to read and write) used by the Vagrant CLI to set attributes of a vagrant box (such as CPU, memory, disk and network configurations). Vagrantfiles are mostly single line statements.
+
+## Managing through useful commands
 
 You can suspend your VM. The suspend command is similar to the hibernate feature of a laptop. The box is unloaded from memory but not shot down. The contents of the box RAM are written to the disk. You can do so with the command:
 
@@ -114,10 +118,6 @@ You can restart your VM if you want to refresh after some modifications (it's a 
 After destroying your VM, if you can also remove the box installed in the system with the command:
 
 >vagrant box remove
-
-# Managing the configuration through the Vagrantfile
-
-Vagran boxes are configured using a vagrantfile. Vagrantfiles are simple Ruby programs (easy to read and write) used by the Vagrant CLI to set attributes of a vagrant box (such as CPU, memory, disk and network configurations). Vagrantfiles are mostly single line statements.
 
 ## Name
 
@@ -275,8 +275,6 @@ Vagrant can run boxes in the same way, with multi-machine vagrantfiles. Vagrant 
 We create our vagrantfile in "multi-env" folder:
 >vagrant init bento/ubuntu-16.04
 
-### Defining Multiple Machines
-
 Multiple machines are defined within the same Vagrantfile using the **config.vm.define** method call. We create a new object for each box using **define** and with that we can introduce two different blocks for the two boxes we want to create.
 
 ```
@@ -424,7 +422,7 @@ It will create a Vagrantfile and now you can boot it with:
 
 The vagrant up command will locate the box on Vagrant Cloud, downloa it and add it to the local box cache (you can see it with vagrant box list).
 
-# Kill a process
+## Kill a process
 
 Rarely, a vagrant process could freeze (sometimes because of the provisioner). You can kill the process with the following command:
 
@@ -432,7 +430,7 @@ Rarely, a vagrant process could freeze (sometimes because of the provisioner). Y
 or
 >pkill ruby
 
-# Go back to a previous state
+## Go back to a previous state
 
 You can save a current state of a box, in case your future developments could affect the box.
 If the VM brakes, you can go back.
@@ -444,17 +442,7 @@ Then, in the future, you can restore the snapshot and go back to this state by d
 
 Keep in mind that each snapshot takes up some space on the hard drive.
 
-# Do more
-
-Vagrant is extensible and also has plugins for custom-synced folder capabilities, DNS, and many others. There is a list on Github where you can see all the HashiCorp and third party plugins available for Vagrant.
-
-# Resources 
-
-I managed this repo using VS Code wih Vagrantfile Support extension (syntax highlighting for Ruby). 
-
-# Bibliographie
-
-# SSH Trick
+## SSH Trick
 
 First of all, be sure that you set a private network with an IP address in the vagrantfile.
 If you want to connect to the Vagrant box through SSH without having to be inside the vagrant environment, you can do it with these steps:
@@ -491,3 +479,12 @@ Host 192.168.50.4
 
 Now, in this case, you can connect to the Vagrant box with the command:
 >ssh 192.168.50.4
+
+## Do more
+
+Vagrant is extensible and also has plugins for custom-synced folder capabilities, DNS, and many others. There is a list on Github where you can see all the HashiCorp and third party plugins available for Vagrant.
+
+## Resources 
+
+I managed this repo using VS Code wih Vagrantfile Support extension (syntax highlighting for Ruby).
+I also based part of this repo on a useful course on [LinkedIn Learning](https://www.linkedin.com/learning/learning-vagrant).
